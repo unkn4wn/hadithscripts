@@ -1,13 +1,49 @@
 var XMLHttpRequest = require("xhr2");
 const fs = require("fs");
 
-var tirmizinumber = 3956;
-var nasainumber = 5761;
-var abudawoodnumber = 3956;
-var ibnemajanumber = 4341;
-var mishkaatnumber = 6294;
+const numberarray = [3956,5761,3956,4341,6294];
+const namearray = ["tirmizi","nasai","abudawood","ibnemaja","mishkaat"];
 
 
+function createfolders() {
+
+  const mainfolderPath = './zubair';
+  // create main folder "zubair"
+  fs.stat(mainfolderPath, (err, stats) => {
+    if (err) {
+      // The folder doesn't exist, so create it
+      fs.mkdir(mainfolderPath, (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('Folder created successfully!');
+        }
+      });
+    } else {
+      // The folder already exists, so do nothing
+      console.log('Folder already exists');
+    }
+  });
+
+  for (var i = 0; i < namearray.length; i++) { 
+  const folderPath = './zubair/' + namearray[i];
+  fs.stat(folderPath, (err, stats) => {
+    if (err) {
+      // The folder doesn't exist, so create it
+      fs.mkdir(folderPath, (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('Folder created successfully!');
+        }
+      });
+    } else {
+      // The folder already exists, so do nothing
+      console.log('Folder already exists');
+    }
+  });
+}
+}
 
 function get(url) {
    return new Promise(function (resolve, reject) {
@@ -32,18 +68,23 @@ function get(url) {
  }
  
  async function fetchAndWrite() {
-   for (var i = 1; i <= mishkaatnumber; i++) { //change mishkaatnumber to tirmizinumber,nasainumber etc...
+  for (var j = 0; j<namearray.length;j++) {
+    //eigentlich numberarray[j]
+   for (var i = 1; i <= numberarray[j]; i++) {
      try {
-       var response = await get("https://dashingquill.com/js/mishkaat/" + i + ".js"); //change mishkaat to tirmizi,nasai,abudawood or ibnemaja if you want to scrape another collection
+       var response = await get("https://dashingquill.com/js/"+namearray[j]+"/" + i + ".js");
        
-       fs.writeFile("./zubair/mishkaat/" + i + ".js", response, (err) => { //create a folder and change the file path to your folder
+       fs.writeFile("./zubair/" + namearray[j] +"/" + i + ".js", response, (err) => {
          if (err) throw err;
          console.log("The file has been saved!" + i);
+         console.log(numberarray[j] + namearray[j]);
        });
      } catch (error) {
        console.log(error);
      }
    }
+  }
  }
- 
+
+ createfolders();
  fetchAndWrite();
